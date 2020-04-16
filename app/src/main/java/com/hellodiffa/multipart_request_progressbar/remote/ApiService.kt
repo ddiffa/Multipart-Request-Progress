@@ -13,14 +13,14 @@ interface ApiService {
     @Multipart
     @POST("api/v1/events/")
     fun uploadFile(
-        @Part("name") name: RequestBody,
-        @Part("quota") quota: RequestBody,
-        @Part("fk_userid") fkUserId: RequestBody,
-        @Part("date") date: RequestBody,
-        @Part("place") place: RequestBody,
-        @Part("detail") detail: RequestBody,
-        @Part("category") category: RequestBody,
-        @Part("talent") talent: RequestBody,
+        @Part("name") name: RequestBody?,
+        @Part("quota") quota: RequestBody?,
+        @Part("fk_userid") fkUserId: RequestBody?,
+        @Part("date") date: RequestBody?,
+        @Part("place") place: RequestBody?,
+        @Part("detail") detail: RequestBody?,
+        @Part("category") category: RequestBody?,
+        @Part("talent") talent: RequestBody?,
         @Part file: MultipartBody.Part
     ): Single<EventResponse>
 }

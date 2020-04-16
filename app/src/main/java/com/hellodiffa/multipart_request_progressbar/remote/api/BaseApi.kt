@@ -1,5 +1,6 @@
-package com.hellodiffa.multipart_request_progressbar.remote
+package com.hellodiffa.multipart_request_progressbar.remote.api
 
+import com.hellodiffa.multipart_request_progressbar.remote.ApiService
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
@@ -12,7 +13,9 @@ object BaseApi {
     fun provideHttpClient(): OkHttpClient = OkHttpClient.Builder()
         .connectTimeout(60L, TimeUnit.SECONDS)
         .readTimeout(60L, TimeUnit.SECONDS)
-        .addInterceptor(logging())
+        .addInterceptor(HttpLoggingInterceptor().apply {
+            level = HttpLoggingInterceptor.Level.BODY
+        })
         .addInterceptor { chain ->
             val req = chain.request()
                 .newBuilder()
@@ -25,17 +28,14 @@ object BaseApi {
         }
         .build()
 
-    fun provideRetrofit(): ApiService = Retrofit.Builder()
+    fun provideRetrofit(client: OkHttpClient): Retrofit = Retrofit.Builder()
+        .client(client)
         .addConverterFactory(GsonConverterFactory.create())
         .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
         .baseUrl("https://freecoba.herokuapp.com/")
         .build()
-        .create(ApiService::class.java)
 
-    private fun logging(): HttpLoggingInterceptor {
-        val logging = HttpLoggingInterceptor()
-        logging.level = HttpLoggingInterceptor.Level.BODY
-        return logging
-    }
+    fun createService(retrofit: Retrofit): ApiService =
+        retrofit.create(ApiService::class.java)
 
 }
